@@ -2,6 +2,7 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
+    <meta http-equiv="refresh" content="180" >
     <h1>Привет, {{ current_user.email }}!</h1>
     <br>
     <h4>Ваш баланс {{ current_user.reg_balance }} {{ current_user.currency }}.</h4>
@@ -44,5 +45,4 @@
     </form>
     <br>
     <br>
-    
 {% endblock %}

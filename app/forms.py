@@ -17,7 +17,6 @@ class SendMoneyForm(FlaskForm):
 
 class RegistrationForm(FlaskForm):
     reg_balance = StringField('Начальный баланс', validators=[DataRequired()])
-    #currency = StringField('Валюта счета', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     password2 = PasswordField(

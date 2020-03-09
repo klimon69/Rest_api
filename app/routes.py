@@ -19,25 +19,20 @@ import requests
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    
-
     base_curr = current_user.currency
     if base_curr == 'BTC':
         curr_data = 'Путин: "Криптовалюты используют для мошенничества и терроризма." Вы не можете совершать операции с данной валютой.'
-        
         return render_template("btc.html", curr_data=curr_data)
 
     form = SendMoneyForm()
     response = requests.get('https://api.exchangeratesapi.io/latest?base=' + base_curr)
     curr_data = response.json()
 
-    #Забераем список валют EUR, USD, GPB, RUB, BTC
-    
+    #Забераем список валют EUR, USD, GPB, RUB, BTC 
     curr_list = ['EUR', 'USD', 'GBP', 'RUB']
     if base_curr in curr_list: curr_list.remove(base_curr)
     dict_of_currs = { i : curr_data["rates"][i] for i in curr_list }
     
-
     if form.validate_on_submit():
         recipient = Users.query.filter_by(email=form.recipient.data).first()
         if recipient is None:
@@ -65,12 +60,11 @@ def index():
         db.session.add(transaction)
         db.session.commit()
 
-        #user_transactions = Transactions.filter_by(email=current_user.email).all()
-
         flash('Перевод успешно выполнен')
-    user_transactions = Transactions.query.filter_by(send_from=current_user.email).all()
     form.recipient.data = ""
     form.amount.data = ""
+    user_transactions = Transactions.query.filter_by(send_from=current_user.email).all()
+    
 
     return render_template("index.html", title='', form=form, user_transactions=user_transactions, curr_data=dict_of_currs)
 
@@ -91,7 +85,6 @@ def login():
 
 
 @app.route('/logout')
-#@login_required
 def logout():
     logout_user()
     return redirect(url_for('index'))
