@@ -2,10 +2,47 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <h1>Hi, {{ current_user.username }}!</h1>
-    {% if form %}
-    {{ wtf.quick_form(form) }}
+    <h1>Привет, {{ current_user.email }}!</h1>
     <br>
-    {% endif %}
+    <h4>Ваш баланс {{ current_user.reg_balance }} {{ current_user.currency }}.</h4>
+    <br>
+    <h4><b>Tекущие курсы валют к {{ current_user.currency }}:</b></h4>
+    {% for currency in curr_data %}
+            1 {{ current_user.currency }} - {{ curr_data[currency] }} {{ currency }}<br>
+            {% endfor %}
+    
+    <h3>Выберите получателя для перевода.</h3>
+    
+    <br>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.recipient.label }}<br>
+            {{ form.recipient(size=32) }}<br>
+            {% for error in form.recipient.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.amount.label }} {{ current_user.currency }}<br>
+            {{ form.amount(size=10) }}<br>
+
+            {% for error in form.amount.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <br>
+        <br>
+        <p>{{ form.submit() }}</p>
+        <br>
+        <br>
+        <h4>Cписок всех операций по своему счету<h4>
+        <br>
+        {% for transaction in user_transactions %}
+            <span style="color: blue;">  Перевод {{ transaction.send_to }} {{ transaction.send_amount }} {{ current_user.currency }}<br></span>
+            {% endfor %}
+    </form>
+    <br>
+    <br>
     
 {% endblock %}

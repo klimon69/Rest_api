@@ -1,30 +1,37 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from app.models import User
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Required, Regexp
+from app.models import Users
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember Me')
-    submit = SubmitField('Sign In')
+    email = StringField('Email', validators=[DataRequired()])
+    password = PasswordField('Пароль', validators=[DataRequired()])
+    remember_me = BooleanField('Запомнить меня')
+    submit = SubmitField('Войти')
 
+class SendMoneyForm(FlaskForm):
+    recipient = StringField('Получатель', validators=[DataRequired(), Email()])
+    amount = StringField('Сумма', validators=[DataRequired(), Regexp(regex=r'[0-9]')])
+    submit = SubmitField('Отправить')
 
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
+    reg_balance = StringField('Начальный баланс', validators=[DataRequired()])
+    #currency = StringField('Валюта счета', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    password = PasswordField('Пароль', validators=[DataRequired()])
     password2 = PasswordField(
-        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Register')
+        'Повторите пароль', validators=[DataRequired(), EqualTo('password')])
+    currency_choises = [('1', 'EUR'), ('2', 'USD'), ('3', 'GPB'), ('4', 'RUB'), ('5', 'BTC')]
+    currency = SelectField(u'Валюта счета', choices = currency_choises, validators = [Required()])
+    submit = SubmitField('Регистрация')
 
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
+    def validate_username(self, email):
+        user = Users.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different username.')
 
     def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
+        user = Users.query.filter_by(email=email.data).first()
         if user is not None:
-            raise ValidationError('Please use a different email address.')
+            raise ValidationError('Пользователь с таким email уже зарегистрирован в системе')
