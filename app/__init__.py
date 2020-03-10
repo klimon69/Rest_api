@@ -11,8 +11,12 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
-db.init_app(app)
+
+
+from app.models import Users, Transactions
+
 db.create_all()
+db.session.commit()
 
 
 

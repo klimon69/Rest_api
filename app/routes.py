@@ -21,8 +21,8 @@ import requests
 @login_required
 def index():
     base_curr = current_user.currency
-    if base_curr == 'BTC':
-        curr_data = 'Путин: "Криптовалюты используют для мошенничества и терроризма." Вы не можете совершать операции с данной валютой.'
+    if base_curr == u'BTC':
+        curr_data = u'Путин: "Криптовалюты используют для мошенничества и терроризма." Вы не можете совершать операции с данной валютой.'
         return render_template("btc.html", curr_data=curr_data)
 
     form = SendMoneyForm()
@@ -37,12 +37,12 @@ def index():
     if form.validate_on_submit():
         recipient = Users.query.filter_by(email=form.recipient.data).first()
         if recipient is None:
-            flash('Получатель не найден')
+            flash(u'Получатель не найден')
             user_transactions = Transactions.query.filter_by(send_from=current_user.email).all()
             return redirect(url_for('index'))
 
         if int(form.amount.data) > int(current_user.reg_balance):
-            flash('На вашем счёте недостаточно  средств')
+            flash(u'На вашем счёте недостаточно  средств')
             return redirect(url_for('index'))
         
         #Считаем конвертацию
@@ -61,7 +61,7 @@ def index():
         db.session.add(transaction)
         db.session.commit()
 
-        flash('Перевод успешно выполнен')
+        flash(u'Перевод успешно выполнен')
     form.recipient.data = ""
     form.amount.data = ""
     user_transactions = Transactions.query.filter_by(send_from=current_user.email).all()
@@ -78,7 +78,7 @@ def login():
     if form.validate_on_submit():
         user = Users.query.filter_by(email=form.email.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            flash(u'Invalid username or password')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         return redirect(url_for('index'))
@@ -104,7 +104,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Теперь вы зарегестрированный пользователь!')
+        flash(u'Теперь вы зарегестрированный пользователь!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 

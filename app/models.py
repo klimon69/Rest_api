@@ -34,3 +34,4 @@ class Transactions(db.Model):
 
     def __repr__(self):
         return '<Transaction {}>'.format(self.send_from)
+

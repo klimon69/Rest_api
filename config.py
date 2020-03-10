@@ -18,5 +18,5 @@ class Config(object):
     'host': '192.168.99.100',
     'port': '5432',
     }
-    SQLALCHEMY_DATABASE_URI = 'postgresql://%(user)s:\
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://%(user)s:\
 %(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
